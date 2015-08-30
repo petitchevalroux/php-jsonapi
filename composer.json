@@ -1,0 +1,19 @@
+{
+    "name": "petitchevalroux/php-jsonapi",
+    "description": "PHP Client for REST Json Api",
+    "require": {
+        "guzzlehttp/guzzle": "~6.0"
+    },
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Patrick Poulain",
+            "email": "petitchevalroux@free.fr"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Jsonapi\\": "src/"
+        }
+    }
+}
