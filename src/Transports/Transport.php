@@ -6,7 +6,6 @@ use JsonApi\Exception;
 
 abstract class Transport
 {
-
     const DEFAULT_CONTENT_TYPE = 'application/json';
 
     /**
@@ -29,7 +28,15 @@ abstract class Transport
     abstract public function delete($uri);
 
     /**
-     * set transport endpoint
+     * Base endpoint url.
+     *
+     * @var string
+     */
+    private $endPoint;
+
+    /**
+     * set transport endpoint.
+     *
      * @param string $endPoint
      */
     public function setEndPoint($endPoint)
@@ -38,8 +45,10 @@ abstract class Transport
     }
 
     /**
-     * Return transport endpoint
+     * Return transport endpoint.
+     *
      * @return string
+     *
      * @throws Exception
      */
     protected function getEndPoint()
@@ -47,11 +56,18 @@ abstract class Transport
         if (!isset($this->endPoint)) {
             throw new Exception('endPoint not setted');
         }
+
         return $this->endPoint;
     }
-
     /**
-     * Set request timeout
+     * Request timeout in seconds.
+     *
+     * @var int
+     */
+    private $timeout;
+    /**
+     * Set request timeout.
+     *
      * @param int $timeout in seconds
      */
     public function setTimeout($timeout)
@@ -60,15 +76,16 @@ abstract class Transport
     }
 
     /**
-     * Get request timeout
+     * Get request timeout.
+     *
      * @return int timeout in seconds
      */
-    protected function getTimeout()
+    public function getTimeout()
     {
         if (!isset($this->timeout)) {
             $this->timeout = static::DEFAULT_TIMEOUT;
         }
+
         return $this->timeout;
     }
-
 }
