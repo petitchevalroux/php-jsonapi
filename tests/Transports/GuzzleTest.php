@@ -31,6 +31,7 @@ class GuzzleTest extends PHPUnit_Framework_TestCase
     {
         $transport = new Guzzle();
         $transport->setEndPoint($this->faker->url());
+        $transport->setTimeout($this->faker->randomDigit());
         $client = $transport->getClient();
         $this->assertTrue($client instanceof Client);
     }
@@ -165,6 +166,13 @@ class GuzzleTest extends PHPUnit_Framework_TestCase
         $expectedTimeout = $this->faker->randomDigitNotNull();
         $transport->setTimeout($expectedTimeout);
         $this->assertEquals($expectedTimeout, $transport->getTimeout());
+    }
+
+    public function testGetTimeoutException()
+    {
+        $transport = new Guzzle();
+        $this->setExpectedException('\JsonApi\Exception', 'timeout not setted');
+        $transport->getTimeout();
     }
 
     public function testDeleteException()

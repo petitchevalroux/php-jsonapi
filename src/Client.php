@@ -2,10 +2,23 @@
 
 namespace JsonApi;
 
+use JsonApi\Transports\Guzzle;
 use JsonApi\Transports\Transport as Transport;
 
 class Client
 {
+
+    /**
+     * Default timeout for a request in seconds.
+     */
+    const DEFAULT_TIMEOUT = 3;
+
+    /**
+     * Client transport layer
+     * @var Transport
+     */
+    private $transport;
+
     /**
      * Set transport layer.
      *
@@ -25,7 +38,9 @@ class Client
     {
         // Set default transport
         if (isset($this->transport) === false) {
-            throw new Exception('Transport not setted');
+            $this->transport = new Guzzle();
+            $this->transport->setEndPoint($this->getEndPoint());
+            $this->transport->setTimeout($this->getTimeout());
         }
 
         return $this->transport;
@@ -116,4 +131,66 @@ class Client
     {
         return json_decode($response, true);
     }
+
+    /**
+     * API EndPoint
+     * @var string
+     */
+    private $endPoint;
+
+    /**
+     * set transport endpoint.
+     *
+     * @param string $endPoint
+     */
+    public function setEndPoint($endPoint)
+    {
+        $this->endPoint = $endPoint;
+    }
+
+    /**
+     * Return transport endpoint.
+     *
+     * @return string
+     *
+     * @throws Exception
+     */
+    protected function getEndPoint()
+    {
+        if (!isset($this->endPoint)) {
+            throw new Exception('endPoint not setted');
+        }
+
+        return $this->endPoint;
+    }
+
+    /**
+     * Request timeout in seconds
+     * @var int
+     */
+    private $timeout;
+
+    /**
+     * Get request timeout.
+     *
+     * @return int timeout in seconds
+     */
+    public function getTimeout()
+    {
+        if (!isset($this->timeout)) {
+            $this->timeout = static::DEFAULT_TIMEOUT;
+        }
+
+        return $this->timeout;
+    }
+
+    /**
+     * Set request timeout in seconds
+     * @param int $timeout
+     */
+    public function setTimeout($timeout)
+    {
+        $this->timeout = $timeout;
+    }
+
 }
