@@ -1,44 +1,64 @@
 <?php
 
-namespace Jsonapi\Transports;
+namespace JsonApi\Transports;
 
-use Jsonapi\Middlewares\GuzzleLastRequest as GuzzleLastRequestMiddleware;
-use Jsonapi\Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Response;
+use JsonApi\Exception;
+use JsonApi\Middlewares\GuzzleLastRequest as GuzzleLastRequestMiddleware;
 
 class Guzzle extends Transport
 {
-    /**
-     * Guzzle http client.
-     *
-     * @var Client
-     */
-    private $client = false;
 
     /**
-     * Guzzle middleware to get last request.
-     *
-     * @var GuzzleLastRequestMiddleware
+     * Return Guzzle Client Configuration
+     * @return array
      */
-    private $lastRequestMiddleware = false;
-
-    /**
-     * Build client and set its configuration.
-     *
-     * @param array $config
-     */
-    public function setClientConfiguration($config)
+    private function getGuzzleClientConfiguration()
     {
-        if (!isset($config['handler'])) {
-            $config['handler'] = HandlerStack::create();
+        $config = [
+            'handler' => $this->getHandlerStack(),
+            'base_uri' => $this->getEndPoint(),
+            'http_errors' => false,
+            'timeout' => $this->getTimeout()
+        ];
+        return $config;
+    }
+
+    /**
+     *
+     * @var HandlerStack
+     */
+    private $handlerStack;
+
+    /**
+     *
+     * @return HandlerStack
+     * @throws Exception
+     */
+    private function getHandlerStack()
+    {
+        if (!isset($this->handlerStack)) {
+            $this->handlerStack = HandlerStack::create();
         }
-        $config['handler']->push(Middleware::mapRequest($this->getLastRequestMiddleware()));
-        $config['http_errors'] = false;
-        $client = new Client($config);
-        $this->setClient($client);
+        return $this->handlerStack;
+    }
+
+    /**
+     * GuzzleLastRequestMiddleware
+     * @var type 
+     */
+    private $lastRequestMiddleware;
+
+
+    /**
+     * Set GuzzleLastRequestMiddleware instance
+     * @param GuzzleLastRequestMiddleware $middleware
+     */
+    public function setLastRequestMiddleware(GuzzleLastRequestMiddleware $middleware) {
+        $this->lastRequestMiddleware = $middleware;
     }
 
     /**
@@ -46,14 +66,20 @@ class Guzzle extends Transport
      *
      * @return GuzzleLastRequestMiddleware
      */
-    public function getLastRequestMiddleware()
+    private function getLastRequestMiddleware()
     {
-        if ($this->lastRequestMiddleware === false) {
+        if (!isset($this->lastRequestMiddleware)) {
             $this->lastRequestMiddleware = new GuzzleLastRequestMiddleware();
         }
 
         return $this->lastRequestMiddleware;
     }
+
+    /**
+     * Guzzle client
+     * @var Client
+     */
+    private $client;
 
     /**
      * Set Guzzle Client.
@@ -72,10 +98,12 @@ class Guzzle extends Transport
      *
      * @throws Exception
      */
-    private function getClient()
+    public function getClient()
     {
-        if ($this->client === false) {
-            throw new Exception('Guzzle client not setted properly');
+        if (!isset($this->client)) {
+            $config = $this->getGuzzleClientConfiguration();
+            $config['handler']->push(Middleware::mapRequest($this->getLastRequestMiddleware()), 'last_request');
+            $this->client = new Client($config);
         }
 
         return $this->client;
@@ -90,7 +118,6 @@ class Guzzle extends Transport
     public function get($uri, $queryParams = [])
     {
         $response = $this->getClient()->get($uri, ['query' => $queryParams]);
-
         return $this->getResponse($response, [200 => true]);
     }
 
@@ -122,7 +149,7 @@ class Guzzle extends Transport
      */
     public function patch($uri, $body)
     {
-        $response = $this->getClient()->put($uri, [
+        $response = $this->getClient()->patch($uri, [
             'headers' => [
                 'Content-Type' => static::DEFAULT_CONTENT_TYPE,
             ],
@@ -176,13 +203,13 @@ class Guzzle extends Transport
         $responseStatus = $response->getStatusCode();
         //echo $this->getDebugInfos($response);
         if (!isset($allowedStatusCodes[$responseStatus])) {
-            throw new Exception('Unexpected status code '.json_encode($this->getDebugInfos($response)));
+            throw new Exception('Unexpected status code ' . json_encode($this->getDebugInfos($response)));
         }
 
         return $response->getBody()->__toString();
     }
 
-    protected function getDebugInfos(Response $response)
+    public function getDebugInfos(Response $response)
     {
         $lastRequest = $this->getLastRequestMiddleware()->getLastRequest();
 
@@ -200,4 +227,5 @@ class Guzzle extends Transport
             ],
         ]);
     }
+
 }

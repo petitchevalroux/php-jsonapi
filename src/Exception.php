@@ -1,6 +1,6 @@
 <?php
 
-namespace Jsonapi;
+namespace JsonApi;
 
 class Exception extends \Exception
 {

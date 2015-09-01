@@ -1,10 +1,18 @@
 <?php
 
-namespace Jsonapi\Transports;
+namespace JsonApi\Transports;
+
+use JsonApi\Exception;
 
 abstract class Transport
 {
+
     const DEFAULT_CONTENT_TYPE = 'application/json';
+
+    /**
+     * Default timeout for a request in seconds.
+     */
+    const DEFAULT_TIMEOUT = 3;
 
     abstract public function get($uri, $queryParams = []);
 
@@ -19,4 +27,48 @@ abstract class Transport
     abstract public function put($uri, $value);
 
     abstract public function delete($uri);
+
+    /**
+     * set transport endpoint
+     * @param string $endPoint
+     */
+    public function setEndPoint($endPoint)
+    {
+        $this->endPoint = $endPoint;
+    }
+
+    /**
+     * Return transport endpoint
+     * @return string
+     * @throws Exception
+     */
+    protected function getEndPoint()
+    {
+        if (!isset($this->endPoint)) {
+            throw new Exception('endPoint not setted');
+        }
+        return $this->endPoint;
+    }
+
+    /**
+     * Set request timeout
+     * @param int $timeout in seconds
+     */
+    public function setTimeout($timeout)
+    {
+        $this->timeout = $timeout;
+    }
+
+    /**
+     * Get request timeout
+     * @return int timeout in seconds
+     */
+    protected function getTimeout()
+    {
+        if (!isset($this->timeout)) {
+            $this->timeout = static::DEFAULT_TIMEOUT;
+        }
+        return $this->timeout;
+    }
+
 }

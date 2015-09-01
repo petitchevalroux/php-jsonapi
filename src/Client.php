@@ -1,56 +1,11 @@
 <?php
 
-namespace Jsonapi;
+namespace JsonApi;
 
-use Transports\Transport as Transport;
-use Jsonapi\Transports\Guzzle as Guzzle;
+use JsonApi\Transports\Transport as Transport;
 
-class Jsonapi
+class Client
 {
-    /**
-     * Default timeout for a request in seconds.
-     */
-    const DEFAULT_TIMEOUT = 60;
-
-    /**
-     * Api End Point.
-     *
-     * @var string
-     */
-    private $endPoint = '';
-
-    /**
-     * Transport used to make request.
-     *
-     * @var Transport
-     */
-    private $transport = false;
-
-    /**
-     * Set endPoint.
-     *
-     * @param string $endpoint
-     */
-    public function setEndPoint($endpoint)
-    {
-        $this->endPoint = trim($endpoint, '/').'/';
-    }
-
-    /**
-     * Return endPoint.
-     *
-     * @return string
-     *
-     * @throws Exception
-     */
-    public function getEndPoint()
-    {
-        if ($this->endPoint === '') {
-            throw new Exception('EndPoint not setted');
-        }
-
-        return $this->endPoint;
-    }
 
     /**
      * Set transport layer.
@@ -63,19 +18,15 @@ class Jsonapi
     }
 
     /**
-     * Return client Jsonapi\Transport.
+     * Return client Transport.
      *
      * @return Transport
      */
     public function getTransport()
     {
         // Set default transport
-        if ($this->transport === false) {
-            $this->transport = new Guzzle();
-            $this->transport->setClientConfiguration([
-                'base_uri' => $this->getEndPoint(),
-                'timeout' => static::DEFAULT_TIMEOUT,
-            ]);
+        if (isset($this->transport) === false) {
+            throw new Exception('Transport not setted');
         }
 
         return $this->transport;
@@ -166,4 +117,5 @@ class Jsonapi
     {
         return json_decode($response, true);
     }
+
 }

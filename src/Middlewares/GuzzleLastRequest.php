@@ -1,6 +1,6 @@
 <?php
 
-namespace Jsonapi\Middlewares;
+namespace JsonApi\Middlewares;
 
 use Psr\Http\Message\RequestInterface;
 
