@@ -11,9 +11,9 @@ use JsonApi\Middlewares\GuzzleLastRequest as GuzzleLastRequestMiddleware;
 
 class Guzzle extends Transport
 {
-
     /**
-     * Return Guzzle Client Configuration
+     * Return Guzzle Client Configuration.
+     *
      * @return array
      */
     private function getGuzzleClientConfiguration()
@@ -22,20 +22,20 @@ class Guzzle extends Transport
             'handler' => $this->getHandlerStack(),
             'base_uri' => $this->getEndPoint(),
             'http_errors' => false,
-            'timeout' => $this->getTimeout()
+            'timeout' => $this->getTimeout(),
         ];
+
         return $config;
     }
 
     /**
-     *
      * @var HandlerStack
      */
     private $handlerStack;
 
     /**
-     *
      * @return HandlerStack
+     *
      * @throws Exception
      */
     private function getHandlerStack()
@@ -43,21 +43,24 @@ class Guzzle extends Transport
         if (!isset($this->handlerStack)) {
             $this->handlerStack = HandlerStack::create();
         }
+
         return $this->handlerStack;
     }
 
     /**
-     * GuzzleLastRequestMiddleware
-     * @var type 
+     * GuzzleLastRequestMiddleware.
+     *
+     * @var type
      */
     private $lastRequestMiddleware;
 
-
     /**
-     * Set GuzzleLastRequestMiddleware instance
+     * Set GuzzleLastRequestMiddleware instance.
+     *
      * @param GuzzleLastRequestMiddleware $middleware
      */
-    public function setLastRequestMiddleware(GuzzleLastRequestMiddleware $middleware) {
+    public function setLastRequestMiddleware(GuzzleLastRequestMiddleware $middleware)
+    {
         $this->lastRequestMiddleware = $middleware;
     }
 
@@ -76,7 +79,8 @@ class Guzzle extends Transport
     }
 
     /**
-     * Guzzle client
+     * Guzzle client.
+     *
      * @var Client
      */
     private $client;
@@ -118,6 +122,7 @@ class Guzzle extends Transport
     public function get($uri, $queryParams = [])
     {
         $response = $this->getClient()->get($uri, ['query' => $queryParams]);
+
         return $this->getResponse($response, [200 => true]);
     }
 
@@ -203,7 +208,7 @@ class Guzzle extends Transport
         $responseStatus = $response->getStatusCode();
         //echo $this->getDebugInfos($response);
         if (!isset($allowedStatusCodes[$responseStatus])) {
-            throw new Exception('Unexpected status code ' . json_encode($this->getDebugInfos($response)));
+            throw new Exception('Unexpected status code '.json_encode($this->getDebugInfos($response)));
         }
 
         return $response->getBody()->__toString();
@@ -227,5 +232,4 @@ class Guzzle extends Transport
             ],
         ]);
     }
-
 }

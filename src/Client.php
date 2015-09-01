@@ -6,7 +6,6 @@ use JsonApi\Transports\Transport as Transport;
 
 class Client
 {
-
     /**
      * Set transport layer.
      *
@@ -117,5 +116,4 @@ class Client
     {
         return json_decode($response, true);
     }
-
 }
