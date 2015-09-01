@@ -6,14 +6,12 @@ use JsonApi\Transports\Guzzle;
 
 class GuzzleTest extends PHPUnit_Framework_TestCase
 {
-
     /**
-     *
      * @var Factory
      */
     private $faker;
 
-    function __construct($name = null, array $data = array(), $dataName = '')
+    public function __construct($name = null, array $data = array(), $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
 
@@ -161,6 +159,14 @@ class GuzzleTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testSetTimeout()
+    {
+        $transport = new Guzzle();
+        $expectedTimeout = $this->faker->randomDigitNotNull();
+        $transport->setTimeout($expectedTimeout);
+        $this->assertEquals($expectedTimeout, $transport->getTimeout());
+    }
+
     public function testDeleteException()
     {
         $expectedBody = $this->faker->text;
@@ -175,7 +181,6 @@ class GuzzleTest extends PHPUnit_Framework_TestCase
 
     public function getTransportForResponse($method, $expectedUri, $expectedStatus, $expectedBody)
     {
-
         $stream = $this->getMockBuilder('\GuzzleHttp\Psr7\Stream')
                 ->disableOriginalConstructor()
                 ->setMethods(['__toString'])
@@ -228,5 +233,4 @@ class GuzzleTest extends PHPUnit_Framework_TestCase
 
         return $transport;
     }
-
 }
