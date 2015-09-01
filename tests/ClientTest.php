@@ -6,7 +6,6 @@ use JsonApi\Transports\Transport;
 
 class ClientTest extends PHPUnit_Framework_TestCase
 {
-
     /**
      * @var Factory
      */
@@ -136,12 +135,14 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $client->getTransport();
     }
 
-    public function testGetDefaultTimeout() {
+    public function testGetDefaultTimeout()
+    {
         $client = new Client();
         $this->assertEquals(Client::DEFAULT_TIMEOUT, $client->getTimeout());
     }
 
-     public function testGetTimeout() {
+    public function testGetTimeout()
+    {
         $client = new Client();
         $expectedTimeout = $this->faker->randomDigit();
         $client->setTimeout($expectedTimeout);

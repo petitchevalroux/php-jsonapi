@@ -6,7 +6,6 @@ use JsonApi\Exception;
 
 abstract class Transport
 {
-
     const DEFAULT_CONTENT_TYPE = 'application/json';
 
     abstract public function get($uri, $queryParams = []);
@@ -86,5 +85,4 @@ abstract class Transport
 
         return $this->timeout;
     }
-
 }

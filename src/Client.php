@@ -7,14 +7,14 @@ use JsonApi\Transports\Transport as Transport;
 
 class Client
 {
-
     /**
      * Default timeout for a request in seconds.
      */
     const DEFAULT_TIMEOUT = 3;
 
     /**
-     * Client transport layer
+     * Client transport layer.
+     *
      * @var Transport
      */
     private $transport;
@@ -133,7 +133,8 @@ class Client
     }
 
     /**
-     * API EndPoint
+     * API EndPoint.
+     *
      * @var string
      */
     private $endPoint;
@@ -165,7 +166,8 @@ class Client
     }
 
     /**
-     * Request timeout in seconds
+     * Request timeout in seconds.
+     *
      * @var int
      */
     private $timeout;
@@ -185,12 +187,12 @@ class Client
     }
 
     /**
-     * Set request timeout in seconds
+     * Set request timeout in seconds.
+     *
      * @param int $timeout
      */
     public function setTimeout($timeout)
     {
         $this->timeout = $timeout;
     }
-
 }
