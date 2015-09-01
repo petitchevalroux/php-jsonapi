@@ -2,6 +2,7 @@
 
 use Faker\Factory;
 use JsonApi\Client;
+use JsonApi\Transports\Transport;
 
 class ClientTest extends PHPUnit_Framework_TestCase
 {
@@ -120,10 +121,31 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $client->deleteResource($this->faker->url());
     }
 
-    public function testGetTransportException()
+    public function testGetTransportDefault()
     {
         $client = new Client();
-        $this->setExpectedException('\JsonApi\Exception');
+        $client->setEndPoint($this->faker->url());
+        $this->assertTrue($client->getTransport() instanceof Transport);
+    }
+
+    public function testGetEndPointException()
+    {
+        $client = new Client();
+        $this->setExpectedException('\JsonApi\Exception', 'endPoint not setted');
         $client->getTransport();
+    }
+
+    public function testGetDefaultTimeout()
+    {
+        $client = new Client();
+        $this->assertEquals(Client::DEFAULT_TIMEOUT, $client->getTimeout());
+    }
+
+    public function testGetTimeout()
+    {
+        $client = new Client();
+        $expectedTimeout = $this->faker->randomDigit();
+        $client->setTimeout($expectedTimeout);
+        $this->assertEquals($expectedTimeout, $client->getTimeout());
     }
 }

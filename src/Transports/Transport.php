@@ -8,11 +8,6 @@ abstract class Transport
 {
     const DEFAULT_CONTENT_TYPE = 'application/json';
 
-    /**
-     * Default timeout for a request in seconds.
-     */
-    const DEFAULT_TIMEOUT = 3;
-
     abstract public function get($uri, $queryParams = []);
 
     /**
@@ -59,12 +54,14 @@ abstract class Transport
 
         return $this->endPoint;
     }
+
     /**
      * Request timeout in seconds.
      *
      * @var int
      */
     private $timeout;
+
     /**
      * Set request timeout.
      *
@@ -83,7 +80,7 @@ abstract class Transport
     public function getTimeout()
     {
         if (!isset($this->timeout)) {
-            $this->timeout = static::DEFAULT_TIMEOUT;
+            throw new Exception('timeout not setted');
         }
 
         return $this->timeout;
