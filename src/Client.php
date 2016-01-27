@@ -77,18 +77,17 @@ class Client
         return $this->getResponse($response);
     }
 
+
     /**
      * Return resources identified by $url.
-     *
      * @param string $uri
-     *
+     * @param array $params
      * @return array
      */
-    public function getResources($uri)
+    public function getResources($uri, $params = [])
     {
         $transport = $this->getTransport();
-        $response = $transport->get($uri);
-
+        $response = $transport->get($uri, $params);
         return $this->getResponse($response);
     }
 
